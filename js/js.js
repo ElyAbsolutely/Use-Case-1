@@ -1,65 +1,141 @@
-document.getElementById("user").style.display = "none";
-document.getElementById("admin").style.display = "none";
-document.getElementById("front").style.display = "none";
+var divUser = document.getElementById("user");
+var divAdmin = document.getElementById("admin");
+var divStart = document.getElementById("start");
+var divFront = document.getElementById("front");
+var divAdder = document.getElementById("adder");
 
-var user = 0;
+divUser.style.display = "none";
+divAdmin.style.display = "none";
+divFront.style.display = "none";
+divAdder.style.display = "none";
+
+const data = document.getElementById("containment");
 
 function logInAsUser() {
-    document.getElementById("user").style.display = "block";
-    document.getElementById("start").style.display = "none";
-    document.getElementById("admin").style.display = "none";
-    document.getElementById("front").style.display = "block";
-    upgrade();
+    divUser.style.display = "block";
+    divStart.style.display = "none";
+    divAdmin.style.display = "none";
+    divFront.style.display = "block";
+    for (let z = 0; votingMachines.length > z; z++) {
+        document.getElementById("remove" + z).style.display = "none";
+    }
 }
 
 function logInAsAdmin() {
-    document.getElementById("admin").style.display = "block";
-    document.getElementById("start").style.display = "none";
-    document.getElementById("user").style.display = "none";
-    document.getElementById("front").style.display = "block";
-    upgrade();
+    divAdmin.style.display = "block";
+    divStart.style.display = "none";
+    divUser.style.display = "none";
+    divFront.style.display = "block";
+    for (let z = 0; votingMachines.length > z; z++) {
+        document.getElementById("remove" + z).style.display = "inline";
+    }
 }
 
 function logOut() {
-    document.getElementById("admin").style.display = "none";
-    document.getElementById("user").style.display = "none";
-    document.getElementById("start").style.display = "block";
-    document.getElementById("front").style.display = "none";
+    divAdmin.style.display = "none";
+    divUser.style.display = "none";
+    divStart.style.display = "block";
+    divFront.style.display = "none";
 }
 
-const votingMachines = [
-    {
-        p: "Kyllä vai ei?",
-        yes: 2,
-        no: 1,
+function addidas() {
+    divUser.style.display = "none";
+    divAdmin.style.display = "none";
+    divFront.style.display = "block";
+    divAdder.style.display = "block";
+}
 
-    },
-    {
-        p: "Uusi vai wanha?",
-        yes: 7,
-        no: 10,
-    }
-];
+const votingMachines = [{
+    question: "Kyllä vai ei?",
+    yes: 2, no: 1,
+}, {
+    question: "Uusi vai wanha?",
+    yes: 7, no: 10,
+}];
 
-
-function upgrade() {
-    const data = document.getElementById("containment");
-    for (let z = 0; votingMachines.length > z; z++) {
+function loadAll() {
+    for (let z = 0; z <= votingMachines.length; z++) {
 
         var ul = document.createElement("ul");
+        ul.setAttribute("id", "ul" + z)
 
         var p = document.createElement("p");
         var y = document.createElement("p");
         var n = document.createElement("p");
 
-        p.innerHTML = votingMachines[z].p;
+        p.innerHTML = votingMachines[z].question;
         y.innerHTML = votingMachines[z].yes;
         n.innerHTML = votingMachines[z].no;
+
+        p.setAttribute("id", "p" + z);
+        y.setAttribute("id", "y" + z);
+        n.setAttribute("id", "n" + z);
 
         ul.appendChild(p);
         ul.appendChild(y);
         ul.appendChild(n);
 
+        var buttonPlus = document.createElement("button");
+        buttonPlus.innerHTML = "+";
+        buttonPlus.onclick = function () {
+            votingMachines[z].yes++;
+            document.getElementById("y" + z).innerHTML = votingMachines[z].yes;
+        };
+        ul.appendChild(buttonPlus);
+
+        var buttonMinus = document.createElement("button");
+        buttonMinus.innerHTML = "-";
+        buttonMinus.onclick = function () {
+            votingMachines[z].no++;
+            document.getElementById("n" + z).innerHTML = votingMachines[z].no;
+        };
+        ul.appendChild(buttonMinus);
+
+        var buttonRemove = document.createElement("button");
+        buttonRemove.innerHTML = "Poista";
+        buttonRemove.setAttribute("id", "remove" + z);
+        buttonRemove.onclick = function () {
+            removeButton(z);
+        };
+        ul.appendChild(buttonRemove);
+
         data.appendChild(ul);
     }
+}
+
+function clear(z) {
+    var x = 0, y = votingMachines.length;
+    switch (z) {
+        default:
+            votingMachines.splice(z, 1);
+        case -1:
+            while (x < y) {
+                document.getElementById("ul" + x).remove();
+                x++;
+            }
+    }
+}
+
+function removeButton(z) {
+    clear(z);
+    loadAll();
+}
+
+function newQuestion() {
+    var income = document.getElementById("question").value;
+    if (income.length == 0) {
+        window.alert("Kysymys kenttä on tyhjä")
+        return;
+    }
+    clear(-1);
+    addQuestion(income);
+    loadAll();
+}
+
+function addQuestion(income) {
+    var element = {};
+    element.question = income;
+    element.yes = 0;
+    element.no = 0;
+    votingMachines.push(element);
 }

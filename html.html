@@ -12,17 +12,17 @@
 
 </head>
 
-<body>
+<body onload="loadAll()">
     <section id="main">
 
-        <div id="start">
+        <div class="box" id="start">
 
             <button onclick="logInAsUser()">Kirjaudu käyttäjänä</button>
             <button onclick="logInAsAdmin()">Kirjaudu hyvänä ihmisenä</button>
 
         </div>
 
-        <div id="front">
+        <div class="box" id="front">
 
             <div id="user">
 
@@ -33,11 +33,20 @@
             <div id="admin">
 
                 <button onclick="logOut()"> Kirjaudu ulos</button>
-                <button>Tee uusi äänestys</button>
+                <button onclick="addidas()">Tee uusi äänestys</button>
 
             </div>
 
             <div id="containment">
+
+            </div>
+
+            <div id="adder">
+
+                <label for="question">Kysymys...
+                    <input size="40" onkeydown="return event.key != 'Enter';" type="text" id="question">
+                </label>
+                <button onclick="newQuestion()">Tee kysymys</button>
 
             </div>
 
